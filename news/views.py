@@ -36,6 +36,11 @@ def user_login(request):
     return render(request, 'news/login.html', {"form": form})
 
 
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+
 def test(request):
     objects = ['join1', 'paul2', 'george3', 'ringo4', 'join5', 'paul6', 'george7']
     paginator = Paginator(objects, 2)
