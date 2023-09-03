@@ -5,6 +5,26 @@ from django.views.generic import ListView
 from .models import News, Category
 from .forms import NewsForm
 from django.core.paginator import Paginator
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно зарегистрировались')
+            return redirect('login')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserCreationForm()
+    return render(request, 'news/register.html', {"form": form})
+
+
+def login(request):
+    return render(request, 'news/login.html')
 
 
 def test(request):
@@ -52,21 +72,6 @@ class NewsByCategory(ListView):
         return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
 
 
-
-
-
-
-# def index(request):
-#     news = News.objects.all()
-#     return render(request, 'news/index.html', {'news': news, 'title': 'Список новостей'})
-
-
-# def get_category(request, category_id):
-#     news = News.objects.filter(category_id=category_id)
-#     category = Category.objects.get(pk=category_id)
-#     return render(request, 'news/category.html', {'news': news, 'category': category})
-
-
 def view_news(request, news_id):
     # news_item = News.objects.get(pk=news_id)
     news_item = get_object_or_404(News, pk=news_id)
@@ -83,3 +88,17 @@ def add_news(request):
     else:
         form = NewsForm()
     return render(request, 'news/add_news.html', {'form': form})
+
+
+
+
+# def index(request):
+#     news = News.objects.all()
+#     return render(request, 'news/index.html', {'news': news, 'title': 'Список новостей'})
+
+
+# def get_category(request, category_id):
+#     news = News.objects.filter(category_id=category_id)
+#     category = Category.objects.get(pk=category_id)
+#     return render(request, 'news/category.html', {'news': news, 'category': category})
+
